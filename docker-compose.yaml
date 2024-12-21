@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  backend:
+    image: backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.local
+    ports:
+      - "8081:8081" # Spring Bootアプリケーションのポート
+      - "8080:8080" # H2コンソールのポート http://localhost:8080/h2-console
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-template-network
+
+  frontend:
+    image: frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.local
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    networks:
+      - app-template-network
+
+networks:
+  app-template-network:
+    driver: bridge
